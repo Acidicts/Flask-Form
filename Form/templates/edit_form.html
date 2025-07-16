@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Form</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f8f8f8; }
+        .container { max-width: 700px; margin: 60px auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 8px #ccc; }
+        h2 { text-align: center; }
+        input[type="text"], textarea, select { width: 100%; padding: 8px; margin: 8px 0; border-radius: 4px; border: 1px solid #ccc; }
+        button { padding: 8px 12px; background: #ffc107; color: #333; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #e0a800; }
+        .form-submit { width: 100%; padding: 10px; margin-top: 20px; font-size: 16px; }
+        .error { color: red; text-align: center; }
+        .field-row { background: #f0f4f8; padding: 10px; margin: 10px 0; border-radius: 4px; position: relative; }
+        .remove-field { position: absolute; right: 10px; top: 10px; background: #dc3545; color: white; border: none; border-radius: 50%; width: 24px; height: 24px; cursor: pointer; }
+        #json-output { display: none; }
+        a { display: block; text-align: center; margin-top: 16px; color: #007bff; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        .fields-container { margin-bottom: 20px; }
+
+        .form-image-preview {
+            max-width: 200px;
+            max-height: 200px;
+            margin: 10px 0;
+            border-radius: 4px;
+            display: none;
+        }
+        .image-options {
+            margin-top: 10px;
+            padding: 10px;
+            background: #f5f7fa;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+        }
+        .checkbox-container input {
+            margin-right: 8px;
+            width: auto;
+        }
+
+        .styling-section {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f5f7fa;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+        }
+
+        .color-picker-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .color-picker {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .color-picker label {
+            margin-bottom: 5px;
+            font-size: 0.9em;
+        }
+
+        .color-preview {
+            width: 100%;
+            height: 30px;
+            margin-top: 5px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+
+        .styling-tabs {
+            display: flex;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .styling-tab {
+            padding: 8px 15px;
+            cursor: pointer;
+            border: 1px solid transparent;
+            border-bottom: none;
+            border-radius: 4px 4px 0 0;
+            margin-right: 5px;
+        }
+
+        .styling-tab.active {
+            background: #fff;
+            border-color: #ddd;
+            font-weight: bold;
+        }
+
+        .styling-content {
+            display: none;
+            padding: 15px;
+            background: #fff;
+            border-radius: 0 0 4px 4px;
+            border: 1px solid #ddd;
+            border-top: none;
+        }
+
+        .styling-content.active {
+            display: block;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            margin: 8px 0;
+        }
+
+        .radio-option input[type="radio"] {
+            margin-right: 8px;
+            width: auto;
+        }
+
+        .preview-container {
+            margin-top: 15px;
+            border: 1px dashed #ccc;
+            padding: 10px;
+            border-radius: 4px;
+        }
+
+        .preview-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .preview-header.logo-type {
+            flex-direction: row;
+            align-items: center;
+        }
+
+        .preview-header.banner-type {
+            flex-direction: column;
+        }
+
+        .preview-logo {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+            margin-right: 15px;
+        }
+
+        .preview-banner {
+            width: 100%;
+            max-height: 150px;
+            object-fit: cover;
+            margin-bottom: 15px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="topbar">
+        <style>
+            .topbar {
+                top: 0;
+                left: 0;
+                background-color: #003566;
+                color: white;
+                padding: 10px 20px;
+                position: fixed;
+                width: 100%;
+                z-index: 1000;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                box-sizing: border-box;
+            }
+            .topbar h3 {
+                margin: 0;
+            }
+            .auth-buttons {
+                display: flex;
+                align-items: center;
+            }
+            .btn_top {
+                background-color: #007bff;
+                color: white;
+                border: none;
+                padding: 8px 16px;
+                border-radius: 5px;
+                cursor: pointer;
+                margin-left: 15px;
+            }
+        </style>
+        <h3>Hello <a href="/user/profile">{{ name }}!</a></h3>
+        <button onclick="window.location.href='/'">Home</button>
+        <div class="auth-buttons">
+            {% if is_authenticated %}
+                <button class="btn_top" onclick="window.location.href='/auth/logout'">Logout</button>
+            {% else %}
+                <button class="btn_top" onclick="window.location.href='/auth/signup'">Sign Up</button>
+                <button class="btn_top" onclick="window.location.href='/auth/signin'">Sign In</button>
+            {% endif %}
+        </div>
+    </div>
+    <div class="container">
+        <h2>Edit Form</h2>
+        {% if error %}
+            <p class="error">{{ error }}</p>
+        {% endif %}
+        <form method="post" id="form-builder">
+            <label for="name">Form Name:</label>
+            <input name="name" id="name" required value="{{ form.name }}">
+
+            <label for="image">Form Image URL:</label>
+            <input name="image" id="image" placeholder="https://example.com/image.jpg" value="{{ form.image or '' }}">
+
+            <img id="image-preview" class="form-image-preview" src="{{ form.image }}" alt="Form image preview"
+                 {% if form.image %}style="display: block;"{% endif %}>
+
+            <div class="image-options">
+                <div class="checkbox-container">
+                    <input type="checkbox" id="display-image" name="display_image" {% if form.display_image %}checked{% endif %} {% if not form.image %}disabled{% endif %}>
+                    <label for="display-image">Display this image when users fill out the form</label>
+                </div>
+
+                <div id="image-display-options" style="margin-top: 10px; display: {{ 'block' if form.display_image else 'none' }};">
+                    <label>Image Display Type:</label>
+                    <div class="radio-option">
+                        <input type="radio" id="banner-type" name="image_display_type" value="banner" {% if form.image_display_type == 'banner' %}checked{% endif %}>
+                        <label for="banner-type">Banner (above form title)</label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" id="logo-type" name="image_display_type" value="logo" {% if form.image_display_type == 'logo' %}checked{% endif %}>
+                        <label for="logo-type">Logo (next to form title)</label>
+                    </div>
+
+                    <div class="preview-container">
+                        <p>Preview:</p>
+                        <div id="image-preview-header" class="preview-header {{ form.image_display_type }}-type">
+                            <img id="preview-image" src="{{ form.image }}" alt="Preview" class="preview-{{ form.image_display_type }}">
+                            <h3 id="preview-title" style="margin: 0;">{{ form.name }}</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="styling-section">
+                <h3>Form Styling</h3>
+
+                <div class="styling-tabs">
+                    <div class="styling-tab active" data-tab="colors">Colors</div>
+                    <div class="styling-tab" data-tab="preview">Preview</div>
+                </div>
+
+                <div class="styling-content active" data-content="colors">
+                    <div class="color-picker-group">
+                        <div class="color-picker">
+                            <label for="bg-color">Page Background:</label>
+                            <input type="color" id="bg-color" name="bg_color" value="{{ form.bg_color }}">
+                            <div class="color-preview" id="bg-color-preview" style="background-color: {{ form.bg_color }};"></div>
+                        </div>
+
+                        <div class="color-picker">
+                            <label for="field-bg-color">Field Background:</label>
+                            <input type="color" id="field-bg-color" name="field_bg_color" value="{{ form.field_bg_color }}">
+                            <div class="color-preview" id="field-bg-preview" style="background-color: {{ form.field_bg_color }};"></div>
+                        </div>
+
+                        <div class="color-picker">
+                            <label for="text-color">Text Color:</label>
+                            <input type="color" id="text-color" name="text_color" value="{{ form.text_color }}">
+                            <div class="color-preview" id="text-color-preview" style="background-color: {{ form.text_color }};"></div>
+                        </div>
+
+                        <div class="color-picker">
+                            <label for="heading-color">Heading Color:</label>
+                            <input type="color" id="heading-color" name="heading_color" value="{{ form.heading_color }}">
+                            <div class="color-preview" id="heading-color-preview" style="background-color: {{ form.heading_color }};"></div>
+                        </div>
+
+                        <div class="color-picker">
+                            <label for="button-color">Button Color:</label>
+                            <input type="color" id="button-color" name="button_color" value="{{ form.button_color }}">
+                            <div class="color-preview" id="button-color-preview" style="background-color: {{ form.button_color }};"></div>
+                        </div>
+
+                        <div class="color-picker">
+                            <label for="button-text-color">Button Text:</label>
+                            <input type="color" id="button-text-color" name="button_text_color" value="{{ form.button_text_color }}">
+                            <div class="color-preview" id="button-text-preview" style="background-color: {{ form.button_text_color }};"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="styling-content" data-content="preview">
+                    <div id="form-preview" style="padding: 20px; border-radius: 8px; background-color: {{ form.bg_color }};">
+                        <h3 style="color: {{ form.heading_color }}; text-align: center;">Form Preview</h3>
+                        <div style="margin-bottom: 15px;">
+                            <label style="display: block; margin-bottom: 5px; color: {{ form.text_color }};">Example Field:</label>
+                            <input type="text" style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #ccc; background-color: {{ form.field_bg_color }};" placeholder="Example input">
+                        </div>
+                        <button style="width: 100%; padding: 10px; border: none; border-radius: 4px; background-color: {{ form.button_color }}; color: {{ form.button_text_color }}; cursor: pointer;">Example Button</button>
+                    </div>
+                </div>
+            </div>
+
+            <h3>Form Fields</h3>
+            <div id="fields-container" class="fields-container"></div>
+
+            <button type="button" id="add-field">Add Field</button>
+
+            <textarea name="fields" id="json-output" required>{{ form.fields }}</textarea>
+
+            <button type="submit" class="form-submit">Save Changes</button>
+        </form>
+        <a href="/admin/forms">Back to Forms</a>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const fieldsContainer = document.getElementById('fields-container');
+            const addFieldButton = document.getElementById('add-field');
+            const jsonOutput = document.getElementById('json-output');
+            const form = document.getElementById('form-builder');
+            const imageInput = document.getElementById('image');
+            const imagePreview = document.getElementById('image-preview');
+            const displayImageCheckbox = document.getElementById('display-image');
+            const imageDisplayOptions = document.getElementById('image-display-options');
+            const bannerTypeRadio = document.getElementById('banner-type');
+            const logoTypeRadio = document.getElementById('logo-type');
+            const previewHeader = document.getElementById('image-preview-header');
+            const previewImage = document.getElementById('preview-image');
+            const previewTitle = document.getElementById('preview-title');
+
+            // Image preview functionality
+            imageInput.addEventListener('input', function() {
+                if (this.value) {
+                    imagePreview.src = this.value;
+                    previewImage.src = this.value;
+                    imagePreview.style.display = 'block';
+                    displayImageCheckbox.disabled = false;
+                } else {
+                    imagePreview.style.display = 'none';
+                    displayImageCheckbox.disabled = true;
+                    displayImageCheckbox.checked = false;
+                    imageDisplayOptions.style.display = 'none';
+                }
+            });
+
+            displayImageCheckbox.addEventListener('change', function() {
+                imageDisplayOptions.style.display = this.checked ? 'block' : 'none';
+            });
+
+            bannerTypeRadio.addEventListener('change', function() {
+                if (this.checked) {
+                    previewHeader.className = 'preview-header banner-type';
+                    previewImage.className = 'preview-banner';
+                }
+            });
+
+            logoTypeRadio.addEventListener('change', function() {
+                if (this.checked) {
+                    previewHeader.className = 'preview-header logo-type';
+                    previewImage.className = 'preview-logo';
+                }
+            });
+
+            // Form title preview update
+            const formNameInput = document.getElementById('name');
+            formNameInput.addEventListener('input', function() {
+                previewTitle.textContent = this.value || 'Form Title';
+            });
+
+            let fieldCounter = 0;
+
+            // Add a new field row
+            function addFieldRow(fieldData = null) {
+                const fieldRow = document.createElement('div');
+                fieldRow.className = 'field-row';
+                fieldRow.dataset.id = fieldCounter++;
+
+                fieldRow.innerHTML = `
+                    <button type="button" class="remove-field">&times;</button>
+                    <div>
+                        <label>Field Label:</label>
+                        <input type="text" class="field-label" required value="${fieldData ? fieldData.label : ''}">
+                    </div>
+                    <div>
+                        <label>Field Name:</label>
+                        <input type="text" class="field-name" required value="${fieldData ? fieldData.name : ''}">
+                    </div>
+                    <div>
+                        <label>Field Type:</label>
+                        <select class="field-type">
+                            <option value="text" ${fieldData && fieldData.type === 'text' ? 'selected' : ''}>Text</option>
+                            <option value="number" ${fieldData && fieldData.type === 'number' ? 'selected' : ''}>Number</option>
+                            <option value="email" ${fieldData && fieldData.type === 'email' ? 'selected' : ''}>Email</option>
+                            <option value="checkbox" ${fieldData && fieldData.type === 'checkbox' ? 'selected' : ''}>Checkbox</option>
+                            <option value="radio" ${fieldData && fieldData.type === 'radio' ? 'selected' : ''}>Radio Buttons</option>
+                            <option value="textarea" ${fieldData && fieldData.type === 'textarea' ? 'selected' : ''}>Text Area</option>
+                            <option value="select" ${fieldData && fieldData.type === 'select' ? 'selected' : ''}>Dropdown</option>
+                            <option value="date" ${fieldData && fieldData.type === 'date' ? 'selected' : ''}>Date</option>
+                        </select>
+                    </div>
+                    <div class="options-container" style="display: ${fieldData && ['select', 'radio', 'checkbox'].includes(fieldData.type) ? 'block' : 'none'};">
+                        <label>Options (comma-separated):</label>
+                        <input type="text" class="field-options" placeholder="Option 1, Option 2, Option 3"
+                               value="${fieldData && fieldData.options ? fieldData.options.join(', ') : ''}">
+                    </div>
+                    <div>
+                        <label>Required:</label>
+                        <input type="checkbox" class="field-required" ${fieldData ? (fieldData.required ? 'checked' : '') : 'checked'}>
+                    </div>
+                `;
+
+                fieldsContainer.appendChild(fieldRow);
+
+                // Show options input for select, radio, checkbox
+                const typeSelect = fieldRow.querySelector('.field-type');
+                const optionsContainer = fieldRow.querySelector('.options-container');
+
+                typeSelect.addEventListener('change', function() {
+                    if (['select', 'radio', 'checkbox'].includes(this.value)) {
+                        optionsContainer.style.display = 'block';
+                    } else {
+                        optionsContainer.style.display = 'none';
+                    }
+                });
+
+                // Add remove button functionality
+                const removeButton = fieldRow.querySelector('.remove-field');
+                removeButton.addEventListener('click', function() {
+                    fieldRow.remove();
+                    updateJsonOutput();
+                });
+
+                // Auto-generate field name from label (only if name is empty)
+                const labelInput = fieldRow.querySelector('.field-label');
+                const nameInput = fieldRow.querySelector('.field-name');
+
+                if (!fieldData) {
+                    labelInput.addEventListener('input', function() {
+                        // Convert label to lowercase, replace spaces with underscores
+                        nameInput.value = this.value.toLowerCase().replace(/\s+/g, '_').replace(/[^a-z0-9_]/g, '');
+                    });
+                }
+
+                // Update JSON whenever a field changes
+                const inputs = fieldRow.querySelectorAll('input, select');
+                inputs.forEach(input => {
+                    input.addEventListener('change', updateJsonOutput);
+                    input.addEventListener('input', updateJsonOutput);
+                });
+            }
+
+            // Add Field button handler
+            addFieldButton.addEventListener('click', function() {
+                addFieldRow();
+            });
+
+            // Generate the JSON output
+            function updateJsonOutput() {
+                const fields = [];
+                const fieldRows = document.querySelectorAll('.field-row');
+
+                fieldRows.forEach(row => {
+                    const label = row.querySelector('.field-label').value;
+                    const name = row.querySelector('.field-name').value;
+                    const type = row.querySelector('.field-type').value;
+                    const required = row.querySelector('.field-required').checked;
+
+                    const field = {
+                        name: name,
+                        label: label,
+                        type: type,
+                        required: required
+                    };
+
+                    // Add options for select, radio, checkbox
+                    if (['select', 'radio', 'checkbox'].includes(type)) {
+                        const optionsText = row.querySelector('.field-options').value;
+                        if (optionsText) {
+                            field.options = optionsText.split(',').map(option => option.trim());
+                        }
+                    }
+
+                    fields.push(field);
+                });
+
+                jsonOutput.value = JSON.stringify(fields, null, 2);
+            }
+
+            // Load existing fields from JSON
+            try {
+                const existingFields = JSON.parse(jsonOutput.value);
+                if (Array.isArray(existingFields)) {
+                    existingFields.forEach(field => {
+                        addFieldRow(field);
+                    });
+                }
+            } catch (e) {
+                // If parsing fails, add an empty field
+                addFieldButton.click();
+            }
+
+            // Update JSON before form submit
+            form.addEventListener('submit', function(e) {
+                updateJsonOutput();
+
+                if (document.querySelectorAll('.field-row').length === 0) {
+                    e.preventDefault();
+                    alert('Please add at least one field to your form.');
+                }
+            });
+
+            // Color picker preview updates
+            const colorInputs = document.querySelectorAll('input[type="color"]');
+            colorInputs.forEach(input => {
+                const previewId = input.id + '-preview';
+                const preview = document.getElementById(previewId);
+
+                input.addEventListener('input', function() {
+                    preview.style.backgroundColor = this.value;
+                    updateFormPreview();
+                });
+            });
+
+            // Styling tabs
+            const tabs = document.querySelectorAll('.styling-tab');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    // Remove active class from all tabs
+                    document.querySelectorAll('.styling-tab').forEach(t => {
+                        t.classList.remove('active');
+                    });
+
+                    // Add active class to clicked tab
+                    this.classList.add('active');
+
+                    // Hide all content
+                    document.querySelectorAll('.styling-content').forEach(c => {
+                        c.classList.remove('active');
+                    });
+
+                    // Show content for this tab
+                    const contentId = this.getAttribute('data-tab');
+                    document.querySelector(`.styling-content[data-content="${contentId}"]`).classList.add('active');
+                });
+            });
+
+            // Update form preview
+            function updateFormPreview() {
+                const preview = document.getElementById('form-preview');
+                const heading = preview.querySelector('h3');
+                const label = preview.querySelector('label');
+                const input = preview.querySelector('input');
+                const button = preview.querySelector('button');
+
+                preview.style.backgroundColor = document.getElementById('bg-color').value;
+                heading.style.color = document.getElementById('heading-color').value;
+                label.style.color = document.getElementById('text-color').value;
+                input.style.backgroundColor = document.getElementById('field-bg-color').value;
+                button.style.backgroundColor = document.getElementById('button-color').value;
+                button.style.color = document.getElementById('button-text-color').value;
+            }
+        });
+    </script>
+</body>
+</html>

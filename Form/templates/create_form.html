@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create Form</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f8f8f8; }
+        .container { max-width: 700px; margin: 60px auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 8px #ccc; }
+        h2, h3 { text-align: center; }
+        input[type="text"], textarea, select { width: 100%; padding: 8px; margin: 8px 0; border-radius: 4px; border: 1px solid #ccc; box-sizing: border-box; }
+
+        /* Form Builder Styles */
+        .field-row {
+            background: #f5f7fa;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            position: relative;
+        }
+        .field-row:hover { box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+
+        .field-controls {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            display: flex;
+            gap: 5px;
+        }
+
+        .field-controls button {
+            width: auto;
+            padding: 5px;
+            font-size: 12px;
+        }
+
+        .btn-move-up, .btn-move-down {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-remove {
+            background: #dc3545;
+            color: white;
+        }
+
+        .field-type-select {
+            margin-bottom: 10px;
+            background: #e9ecef;
+            padding: 10px;
+            border-radius: 4px;
+        }
+
+        .options-container {
+            margin-top: 10px;
+            padding: 10px;
+            background: #e9ecef;
+            border-radius: 4px;
+        }
+
+        .options-list {
+            margin-top: 5px;
+        }
+
+        .option-item {
+            display: flex;
+            margin-bottom: 5px;
+            align-items: center;
+        }
+
+        .option-item input {
+            flex: 1;
+            margin-right: 5px;
+        }
+
+        .btn-add-option {
+            width: auto;
+            background: #6c757d;
+            padding: 5px 10px;
+            margin-top: 5px;
+        }
+
+        .required-checkbox {
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        .required-checkbox input {
+            width: auto;
+            margin-right: 5px;
+        }
+
+        /* Button Styles */
+        .btn-add-field {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            width: auto;
+            display: block;
+        }
+
+        .btn-add-field:hover { background: #218838; }
+
+        .form-submit {
+            width: 100%;
+            padding: 12px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        .form-submit:hover { background: #0069d9; }
+
+        .error { color: red; text-align: center; margin: 10px 0; }
+        #json-output { display: none; }
+
+        a { display: block; text-align: center; margin-top: 16px; color: #007bff; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+
+        .empty-state {
+            text-align: center;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            margin: 20px 0;
+            color: #6c757d;
+        }
+
+        .image-preview {
+            max-width: 200px;
+            max-height: 150px;
+            margin-top: 10px;
+            border-radius: 4px;
+            display: none;
+            border: 1px solid #ddd;
+        }
+        .image-options {
+            margin-top: 10px;
+            padding: 10px;
+            background: #f5f7fa;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            margin-top: 8px;
+        }
+        .checkbox-container input {
+            margin-right: 8px;
+            width: auto;
+        }
+
+        .styling-section {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f5f7fa;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+        }
+
+        .color-picker-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .color-picker {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .color-picker label {
+            margin-bottom: 5px;
+            font-size: 0.9em;
+        }
+
+        .color-preview {
+            width: 100%;
+            height: 30px;
+            margin-top: 5px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+
+        .styling-tabs {
+            display: flex;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .styling-tab {
+            padding: 8px 15px;
+            cursor: pointer;
+            border: 1px solid transparent;
+            border-bottom: none;
+            border-radius: 4px 4px 0 0;
+            margin-right: 5px;
+        }
+
+        .styling-tab.active {
+            background: #fff;
+            border-color: #ddd;
+            font-weight: bold;
+        }
+
+        .styling-content {
+            display: none;
+            padding: 15px;
+            background: #fff;
+            border-radius: 0 0 4px 4px;
+            border: 1px solid #ddd;
+            border-top: none;
+        }
+
+        .styling-content.active {
+            display: block;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            margin: 8px 0;
+        }
+
+        .radio-option input[type="radio"] {
+            margin-right: 8px;
+            width: auto;
+        }
+
+        .preview-container {
+            margin-top: 15px;
+            border: 1px dashed #ccc;
+            padding: 10px;
+            border-radius: 4px;
+        }
+
+        .preview-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .preview-header.logo-type {
+            flex-direction: row;
+            align-items: center;
+        }
+
+        .preview-header.banner-type {
+            flex-direction: column;
+        }
+
+        .preview-logo {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+            margin-right: 15px;
+        }
+
+        .preview-banner {
+            width: 100%;
+            max-height: 150px;
+            object-fit: cover;
+            margin-bottom: 15px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+<div class="topbar">
+        <style>
+            .topbar {
+                top: 0;
+                left: 0;
+                background-color: #003566;
+                color: white;
+                padding: 10px 20px;
+                position: fixed;
+                width: 100%;
+                z-index: 1000;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                box-sizing: border-box;
+            }
+            .topbar h3 {
+                margin: 0;
+            }
+            .auth-buttons {
+                display: flex;
+                align-items: center;
+            }
+            .btn_top {
+                background-color: #007bff;
+                color: white;
+                border: none;
+                padding: 8px 16px;
+                border-radius: 5px;
+                cursor: pointer;
+                margin-left: 15px;
+            }
+            .btn {
+                background: #ffc107;
+                color: #333;
+                border: none;
+                border-radius: 4px;
+                padding: 6px 12px;
+                cursor: pointer;
+                margin-left: 8px;
+            }
+        </style>
+        <h3 style="display: inline; margin: 0;">Hello <a href="/user/profile" style="color: #fff; text-decoration: underline;">{{ name }}!</a></h3>
+        <button class="btn" onclick="window.location.href='/'">Home</button>
+        <div class="auth-buttons" style="display: inline; margin-left: 20px;">
+            {% if user.is_authenticated %}
+                <button class="btn_top" onclick="window.location.href='/auth/logout'">Logout</button>
+            {% else %}
+                <button class="btn_top" onclick="window.location.href='/auth/signup'">Sign Up</button>
+                <button class="btn_top" onclick="window.location.href='/auth/signin'">Sign In</button>
+            {% endif %}
+        </div>
+    </div>
+    <div class="container">
+        <h2>Create a New Form</h2>
+        {% if error %}
+            <p class="error">{{ error }}</p>
+        {% endif %}
+
+        <form id="form-builder" method="post">
+            <div>
+                <label for="form-name">Form Name:</label>
+                <input id="form-name" name="name" required placeholder="Enter a name for your form">
+            </div>
+
+            <div>
+                <label for="form-image">Form Image URL:</label>
+                <input id="form-image" name="image" placeholder="https://example.com/image.jpg">
+                <img id="image-preview" class="image-preview" alt="Image preview">
+
+                <div class="image-options">
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="display-image" name="display_image">
+                        <label for="display-image">Display this image when users fill out the form</label>
+                    </div>
+
+                    <div id="image-display-options" style="margin-top: 10px; display: none;">
+                        <label>Image Display Type:</label>
+                        <div class="radio-option">
+                            <input type="radio" id="banner-type" name="image_display_type" value="banner" checked>
+                            <label for="banner-type">Banner (above form title)</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="logo-type" name="image_display_type" value="logo">
+                            <label for="logo-type">Logo (next to form title)</label>
+                        </div>
+
+                        <div class="preview-container">
+                            <p>Preview:</p>
+                            <div id="image-preview-header" class="preview-header banner-type">
+                                <img id="preview-image" src="" alt="Preview" class="preview-banner">
+                                <h3 id="preview-title" style="margin: 0;">Form Title</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="styling-section">
+                <h3>Form Styling</h3>
+
+                <div class="styling-tabs">
+                    <div class="styling-tab active" data-tab="colors">Colors</div>
+                    <div class="styling-tab" data-tab="preview">Preview</div>
+                </div>
+
+                <div class="styling-content active" data-content="colors">
+                    <div class="color-picker-group">
+                        <div class="color-picker">
+                            <label for="bg-color">Page Background:</label>
+                            <input type="color" id="bg-color" name="bg_color" value="#f8f8f8">
+                            <div class="color-preview" id="bg-color-preview" style="background-color: #f8f8f8;"></div>
+                        </div>
+
+                        <div class="color-picker">
+                            <label for="field-bg-color">Field Background:</label>
+                            <input type="color" id="field-bg-color" name="field_bg_color" value="#ffffff">
+                            <div class="color-preview" id="field-bg-preview" style="background-color: #ffffff;"></div>
+                        </div>
+
+                        <div class="color-picker">
+                            <label for="text-color">Text Color:</label>
+                            <input type="color" id="text-color" name="text_color" value="#000000">
+                            <div class="color-preview" id="text-color-preview" style="background-color: #000000;"></div>
+                        </div>
+
+                        <div class="color-picker">
+                            <label for="heading-color">Heading Color:</label>
+                            <input type="color" id="heading-color" name="heading_color" value="#000000">
+                            <div class="color-preview" id="heading-color-preview" style="background-color: #000000;"></div>
+                        </div>
+
+                        <div class="color-picker">
+                            <label for="button-color">Button Color:</label>
+                            <input type="color" id="button-color" name="button_color" value="#007bff">
+                            <div class="color-preview" id="button-color-preview" style="background-color: #007bff;"></div>
+                        </div>
+
+                        <div class="color-picker">
+                            <label for="button-text-color">Button Text:</label>
+                            <input type="color" id="button-text-color" name="button_text_color" value="#ffffff">
+                            <div class="color-preview" id="button-text-preview" style="background-color: #ffffff;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="styling-content" data-content="preview">
+                    <div id="form-preview" style="padding: 20px; border-radius: 8px; background-color: #f8f8f8;">
+                        <h3 style="color: #000000; text-align: center;">Form Preview</h3>
+                        <div style="margin-bottom: 15px;">
+                            <label style="display: block; margin-bottom: 5px; color: #000000;">Example Field:</label>
+                            <input type="text" style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #ccc; background-color: #ffffff;" placeholder="Example input">
+                        </div>
+                        <button style="width: 100%; padding: 10px; border: none; border-radius: 4px; background-color: #007bff; color: #ffffff; cursor: pointer;">Example Button</button>
+                    </div>
+                </div>
+            </div>
+
+            <h3>Form Fields</h3>
+
+            <button type="button" class="btn-add-field" id="add-field-btn">+ Add Field</button>
+
+            <div id="fields-container">
+                <div id="empty-state" class="empty-state">
+                    No fields yet. Click "Add Field" to start building your form.
+                </div>
+            </div>
+
+            <input type="hidden" name="fields" id="json-output">
+
+            <button type="submit" class="form-submit">Create Form</button>
+        </form>
+
+        <a href="/admin/forms">Back to Forms</a>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const fieldsContainer = document.getElementById('fields-container');
+            const addFieldBtn = document.getElementById('add-field-btn');
+            const jsonOutput = document.getElementById('json-output');
+            const emptyState = document.getElementById('empty-state');
+            const form = document.getElementById('form-builder');
+
+            let fieldCounter = 0;
+
+            // Add a new field to the form builder
+            addFieldBtn.addEventListener('click', function() {
+                addFieldRow();
+                updateEmptyState();
+            });
+
+            // Generate a unique field ID
+            function generateFieldId() {
+                return 'field_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
+            }
+
+            // Add a field row to the builder
+            function addFieldRow() {
+                const fieldId = generateFieldId();
+                const fieldRow = document.createElement('div');
+                fieldRow.className = 'field-row';
+                fieldRow.dataset.id = fieldId;
+
+                fieldRow.innerHTML = `
+                    <div class="field-controls">
+                        <button type="button" class="btn-move-up" title="Move Up">↑</button>
+                        <button type="button" class="btn-move-down" title="Move Down">↓</button>
+                        <button type="button" class="btn-remove" title="Remove Field">×</button>
+                    </div>
+
+                    <div>
+                        <label for="label-${fieldId}">Field Label:</label>
+                        <input type="text" id="label-${fieldId}" class="field-label"
+                               placeholder="What users will see (e.g. Email Address)" required>
+                    </div>
+
+                    <div>
+                        <label for="name-${fieldId}">Field Name:</label>
+                        <input type="text" id="name-${fieldId}" class="field-name"
+                               placeholder="Technical name (e.g. email_address)" required>
+                    </div>
+
+                    <div class="field-type-select">
+                        <label for="type-${fieldId}">Field Type:</label>
+                        <select id="type-${fieldId}" class="field-type">
+                            <option value="text">Text Input</option>
+                            <option value="textarea">Text Area (Multiple Lines)</option>
+                            <option value="email">Email</option>
+                            <option value="number">Number</option>
+                            <option value="date">Date</option>
+                            <option value="select">Dropdown Selection</option>
+                            <option value="radio">Radio Buttons (Single Choice)</option>
+                            <option value="checkbox">Checkboxes (Multiple Choice)</option>
+                        </select>
+                    </div>
+
+                    <div class="options-container" style="display: none;">
+                        <label>Options:</label>
+                        <div class="options-list"></div>
+                        <button type="button" class="btn-add-option">+ Add Option</button>
+                    </div>
+
+                    <div class="required-checkbox">
+                        <input type="checkbox" id="required-${fieldId}" class="field-required" checked>
+                        <label for="required-${fieldId}">Required field</label>
+                    </div>
+                `;
+
+                fieldsContainer.appendChild(fieldRow);
+
+                // Field event handlers
+                setupFieldHandlers(fieldRow);
+            }
+
+            // Set up all event handlers for a field row
+            function setupFieldHandlers(fieldRow) {
+                const fieldId = fieldRow.dataset.id;
+                const labelInput = fieldRow.querySelector('.field-label');
+                const nameInput = fieldRow.querySelector('.field-name');
+                const typeSelect = fieldRow.querySelector('.field-type');
+                const optionsContainer = fieldRow.querySelector('.options-container');
+                const optionsList = fieldRow.querySelector('.options-list');
+                const addOptionBtn = fieldRow.querySelector('.btn-add-option');
+                const moveUpBtn = fieldRow.querySelector('.btn-move-up');
+                const moveDownBtn = fieldRow.querySelector('.btn-move-down');
+                const removeBtn = fieldRow.querySelector('.btn-remove');
+
+                // Auto-generate field name from label
+                labelInput.addEventListener('input', function() {
+                    nameInput.value = this.value
+                        .toLowerCase()
+                        .replace(/[^a-z0-9]+/g, '_')
+                        .replace(/^_+|_+$/g, '');
+                    updateJsonOutput();
+                });
+
+                // Show/hide options based on field type
+                typeSelect.addEventListener('change', function() {
+                    const needsOptions = ['select', 'radio', 'checkbox'].includes(this.value);
+                    optionsContainer.style.display = needsOptions ? 'block' : 'none';
+
+                    // Add default options if empty
+                    if (needsOptions && optionsList.children.length === 0) {
+                        addOption(optionsList);
+                        addOption(optionsList);
+                    }
+
+                    updateJsonOutput();
+                });
+
+                // Add a new option
+                addOptionBtn.addEventListener('click', function() {
+                    addOption(optionsList);
+                    updateJsonOutput();
+                });
+
+                // Move field up
+                moveUpBtn.addEventListener('click', function() {
+                    const prev = fieldRow.previousElementSibling;
+                    if (prev && !prev.id) { // Don't move before empty state message
+                        fieldsContainer.insertBefore(fieldRow, prev);
+                        updateJsonOutput();
+                    }
+                });
+
+                // Move field down
+                moveDownBtn.addEventListener('click', function() {
+                    const next = fieldRow.nextElementSibling;
+                    if (next) {
+                        fieldsContainer.insertBefore(next, fieldRow);
+                        updateJsonOutput();
+                    }
+                });
+
+                // Remove field
+                removeBtn.addEventListener('click', function() {
+                    if (confirm('Are you sure you want to remove this field?')) {
+                        fieldRow.remove();
+                        updateJsonOutput();
+                        updateEmptyState();
+                    }
+                });
+
+                // Update on other field changes
+                nameInput.addEventListener('input', updateJsonOutput);
+                fieldRow.querySelector('.field-required').addEventListener('change', updateJsonOutput);
+            }
+
+            // Add an option input to the options list
+            function addOption(optionsList) {
+                const optionId = 'option_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
+                const optionItem = document.createElement('div');
+                optionItem.className = 'option-item';
+
+                optionItem.innerHTML = `
+                    <input type="text" class="option-value" placeholder="Option text" required>
+                    <button type="button" class="btn-remove">×</button>
+                `;
+
+                optionsList.appendChild(optionItem);
+
+                // Remove option handler
+                optionItem.querySelector('.btn-remove').addEventListener('click', function() {
+                    optionItem.remove();
+                    updateJsonOutput();
+                });
+
+                // Update JSON on option change
+                optionItem.querySelector('.option-value').addEventListener('input', updateJsonOutput);
+
+                return optionItem;
+            }
+
+            // Update empty state message visibility
+            function updateEmptyState() {
+                const hasFields = fieldsContainer.querySelectorAll('.field-row').length > 0;
+                emptyState.style.display = hasFields ? 'none' : 'block';
+            }
+
+            // Generate the JSON output from form fields
+            function updateJsonOutput() {
+                const fields = [];
+                const fieldRows = fieldsContainer.querySelectorAll('.field-row');
+
+                fieldRows.forEach(row => {
+                    const label = row.querySelector('.field-label').value;
+                    const name = row.querySelector('.field-name').value;
+                    const type = row.querySelector('.field-type').value;
+                    const required = row.querySelector('.field-required').checked;
+
+                    if (!label || !name) return; // Skip incomplete fields
+
+                    const field = {
+                        name: name,
+                        label: label,
+                        type: type,
+                        required: required
+                    };
+
+                    // Add options for select, radio, checkbox
+                    if (['select', 'radio', 'checkbox'].includes(type)) {
+                        const optionInputs = row.querySelectorAll('.option-value');
+                        const options = [];
+
+                        optionInputs.forEach(input => {
+                            if (input.value.trim()) {
+                                options.push(input.value.trim());
+                            }
+                        });
+
+                        if (options.length > 0) {
+                            field.options = options;
+                        }
+                    }
+
+                    fields.push(field);
+                });
+
+                jsonOutput.value = JSON.stringify(fields);
+            }
+
+            // Form submission
+            form.addEventListener('submit', function(e) {
+                const fieldRows = fieldsContainer.querySelectorAll('.field-row');
+
+                if (fieldRows.length === 0) {
+                    e.preventDefault();
+                    alert('Please add at least one field to your form.');
+                    return;
+                }
+
+                updateJsonOutput();
+
+                // Basic validation
+                let valid = true;
+                fieldRows.forEach(row => {
+                    const label = row.querySelector('.field-label').value;
+                    const name = row.querySelector('.field-name').value;
+                    const type = row.querySelector('.field-type').value;
+
+                    if (!label || !name) {
+                        valid = false;
+                        row.style.borderColor = 'red';
+                    } else {
+                        row.style.borderColor = '#ddd';
+                    }
+
+                    // Check for options in fields that require them
+                    if (['select', 'radio', 'checkbox'].includes(type)) {
+                        const options = row.querySelectorAll('.option-value');
+                        if (options.length === 0) {
+                            valid = false;
+                            row.querySelector('.options-container').style.borderColor = 'red';
+                        }
+                    }
+                });
+
+                if (!valid) {
+                    e.preventDefault();
+                    alert('Please fix the highlighted fields before submitting.');
+                }
+            });
+
+            // Image preview functionality
+            const imageInput = document.getElementById('form-image');
+            const imagePreview = document.getElementById('image-preview');
+            const displayImageCheckbox = document.getElementById('display-image');
+            const imageDisplayOptions = document.getElementById('image-display-options');
+            const bannerTypeRadio = document.getElementById('banner-type');
+            const logoTypeRadio = document.getElementById('logo-type');
+            const previewHeader = document.getElementById('image-preview-header');
+            const previewImage = document.getElementById('preview-image');
+            const previewTitle = document.getElementById('preview-title');
+
+            imageInput.addEventListener('input', function() {
+                if (this.value) {
+                    imagePreview.src = this.value;
+                    previewImage.src = this.value;
+                    imagePreview.style.display = 'block';
+                    displayImageCheckbox.disabled = false;
+                } else {
+                    imagePreview.style.display = 'none';
+                    displayImageCheckbox.disabled = true;
+                    displayImageCheckbox.checked = false;
+                    imageDisplayOptions.style.display = 'none';
+                }
+            });
+
+            displayImageCheckbox.addEventListener('change', function() {
+                imageDisplayOptions.style.display = this.checked ? 'block' : 'none';
+            });
+
+            bannerTypeRadio.addEventListener('change', function() {
+                if (this.checked) {
+                    previewHeader.className = 'preview-header banner-type';
+                    previewImage.className = 'preview-banner';
+                }
+            });
+
+            logoTypeRadio.addEventListener('change', function() {
+                if (this.checked) {
+                    previewHeader.className = 'preview-header logo-type';
+                    previewImage.className = 'preview-logo';
+                }
+            });
+
+            // Form title preview update
+            const formNameInput = document.getElementById('form-name');
+            formNameInput.addEventListener('input', function() {
+                previewTitle.textContent = this.value || 'Form Title';
+            });
+
+            // Color picker preview updates
+            const colorInputs = document.querySelectorAll('input[type="color"]');
+            colorInputs.forEach(input => {
+                const previewId = input.id + '-preview';
+                const preview = document.getElementById(previewId);
+
+                input.addEventListener('input', function() {
+                    preview.style.backgroundColor = this.value;
+                    updateFormPreview();
+                });
+            });
+
+            // Styling tabs
+            const tabs = document.querySelectorAll('.styling-tab');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    // Remove active class from all tabs
+                    document.querySelectorAll('.styling-tab').forEach(t => {
+                        t.classList.remove('active');
+                    });
+
+                    // Add active class to clicked tab
+                    this.classList.add('active');
+
+                    // Hide all content
+                    document.querySelectorAll('.styling-content').forEach(c => {
+                        c.classList.remove('active');
+                    });
+
+                    // Show content for this tab
+                    const contentId = this.getAttribute('data-tab');
+                    document.querySelector(`.styling-content[data-content="${contentId}"]`).classList.add('active');
+                });
+            });
+
+            // Update form preview
+            function updateFormPreview() {
+                const preview = document.getElementById('form-preview');
+                const heading = preview.querySelector('h3');
+                const label = preview.querySelector('label');
+                const input = preview.querySelector('input');
+                const button = preview.querySelector('button');
+
+                preview.style.backgroundColor = document.getElementById('bg-color').value;
+                heading.style.color = document.getElementById('heading-color').value;
+                label.style.color = document.getElementById('text-color').value;
+                input.style.backgroundColor = document.getElementById('field-bg-color').value;
+                button.style.backgroundColor = document.getElementById('button-color').value;
+                button.style.color = document.getElementById('button-text-color').value;
+            }
+
+            // Initialize form preview
+            updateFormPreview();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f8f8f8; }
+        .container { max-width: 400px; margin: 60px auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 8px #ccc; text-align: center; }
+        h1 { color: #007bff; }
+        a { color: #007bff; text-decoration: none; margin: 0 8px; }
+        a:hover { text-decoration: underline; }
+        .links { margin-top: 24px; }
+        .admin { margin-top: 80px; text-align: center; padding: 20px; background: #f0f4f8; border-radius: 8px; }
+    </style>
+</head>
+<body>
+    <div class="topbar">
+        <style>
+            .topbar {
+                top: 0;
+                left: 0;
+                background-color: #003566;
+                color: white;
+                padding: 10px 20px;
+                position: fixed;
+                width: 100%;
+                z-index: 1000;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                box-sizing: border-box;
+            }
+            .topbar h3 {
+                margin: 0;
+            }
+            .auth-buttons {
+                display: flex;
+                align-items: center;
+            }
+            .btn_top {
+                background-color: #007bff;
+                color: white;
+                border: none;
+                padding: 8px 16px;
+                border-radius: 5px;
+                cursor: pointer;
+                margin-left: 15px;
+            }
+        </style>
+        <h3>Hello <a href="/user/profile">{{ name }}!</a></h3>
+        <div class="auth-buttons">
+            {% if is_authenticated %}
+                <button class="btn_top" onclick="window.location.href='/auth/logout'">Logout</button>
+            {% else %}
+                <button class="btn_top" onclick="window.location.href='/auth/signup'">Sign Up</button>
+                <button class="btn_top" onclick="window.location.href='/auth/signin'">Sign In</button>
+            {% endif %}
+        </div>
+    </div>
+    {% if is_admin %}
+        <div class="admin">
+            <h2>Admin Links</h2>
+            <div class="links">
+                <a href="/admin/forms">Manage Forms</a>
+                <a href="/forms">View Forms</a>
+            </div>
+        </div>
+    {% else %}
+        <div class="container">
+            <h1>Welcome to the Form App</h1>
+            <p>Your account is never associated to the forms you fill!</p>
+            <p>You cannot make your own forms either due to lack of resources...</p>
+        </div>
+    {% endif %}
+        <div class="container">
+            <p>If you have an admin account you will have the buttons to get to the admin panel</p>
+        </div>
+</body>
+</html>

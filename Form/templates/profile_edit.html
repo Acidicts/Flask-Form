@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Profile</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 40px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #003566;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+        }
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        .buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .save-btn {
+            background-color: #007bff;
+            color: white;
+        }
+        .save-btn:hover {
+            background-color: #0056b3;
+        }
+        .cancel-btn {
+            background-color: #f8f9fa;
+            color: #212529;
+            border: 1px solid #ddd;
+        }
+        .cancel-btn:hover {
+            background-color: #e2e6ea;
+        }
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+        .alert-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+    </style>
+</head>
+<body>
+    <div class="topbar">
+        <style>
+            .topbar {
+                top: 0;
+                left: 0;
+                background-color: #003566;
+                color: white;
+                padding: 10px 20px;
+                position: fixed;
+                width: 100%;
+                z-index: 1000;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                box-sizing: border-box;
+            }
+            .topbar h3 {
+                margin: 0;
+            }
+            .auth-buttons {
+                display: flex;
+                align-items: center;
+            }
+            .btn_top {
+                background-color: #007bff;
+                color: white;
+                border: none;
+                padding: 8px 16px;
+                border-radius: 5px;
+                cursor: pointer;
+                margin-left: 15px;
+            }
+            .btn {
+                background: #ffc107;
+                color: #333;
+                border: none;
+                border-radius: 4px;
+                padding: 6px 12px;
+                cursor: pointer;
+                margin-left: 8px;
+            }
+        </style>
+        <h3>Hello <a href="/user/profile">{{ name }}!</a></h3>
+        <button class="btn" onclick="window.location.href='/'">Home</button>
+        <div class="auth-buttons">
+            {% if user.is_authenticated %}
+                <button class="btn_top" onclick="window.location.href='/auth/logout'">Logout</button>
+            {% else %}
+                <button class="btn_top" onclick="window.location.href='/auth/signup'">Sign Up</button>
+                <button class="btn_top" onclick="window.location.href='/auth/signin'">Sign In</button>
+            {% endif %}
+        </div>
+    </div>
+    <div class="container">
+        <h1>Edit Your Profile</h1>
+        
+        <form method="post" action="{{ url_for('user.edit_profile') }}">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" value="{{ user.username }}" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" value="{{ user.password }}" required>
+            </div>
+            
+            <div class="buttons">
+                <button type="button" class="cancel-btn" onclick="window.location.href='{{ url_for('user.profile') }}'">Cancel</button>
+                <button type="submit" class="save-btn">Save Changes</button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

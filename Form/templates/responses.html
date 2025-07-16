@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+    <html>
+    <head>
+        <title>Responses for {{ form.name }}</title>
+        <style>
+            body { font-family: Arial, sans-serif; background: #f8f8f8; }
+            .container { max-width: 900px; margin: 40px auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 8px #ccc; }
+            h2 { text-align: center; }
+            table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+            th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+            th { background: #f0f4f8; }
+            tr:nth-child(even) { background: #f8f8f8; }
+            a { color: #007bff; text-decoration: none; }
+            a:hover { text-decoration: underline; }
+            .export-btn { display: inline-block; margin-top: 20px; padding: 8px 16px; background: #28a745; color: white; border-radius: 4px; text-decoration: none; }
+            .export-btn:hover { background: #218838; text-decoration: none; }
+            .no-data { text-align: center; margin: 30px 0; color: #6c757d; }
+            .back-link { display: block; margin-top: 20px; }
+            .btn {
+                background: #ffc107;
+                color: #333;
+                border: none;
+                border-radius: 4px;
+                padding: 6px 12px;
+                cursor: pointer;
+                margin-left: 8px;
+            }
+        </style>
+    </head>
+    <body>
+    <div class="topbar">
+        <style>
+            .topbar {
+                top: 0;
+                left: 0;
+                background-color: #003566;
+                color: white;
+                padding: 10px 20px;
+                position: fixed;
+                width: 100%;
+                z-index: 1000;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                box-sizing: border-box;
+            }
+            .topbar h3 {
+                margin: 0;
+            }
+            .auth-buttons {
+                display: flex;
+                align-items: center;
+            }
+            .btn_top {
+                background-color: #007bff;
+                color: white;
+                border: none;
+                padding: 8px 16px;
+                border-radius: 5px;
+                cursor: pointer;
+                margin-left: 15px;
+            }
+        </style>
+        <h3>Hello <a href="/user/profile">{{ name }}!</a></h3>
+        <button class="btn" onclick="window.location.href='/'">Home</button>
+        <div class="auth-buttons">
+            {% if user.is_authenticated %}
+                <button class="btn_top" onclick="window.location.href='/auth/logout'">Logout</button>
+            {% else %}
+                <button class="btn_top" onclick="window.location.href='/auth/signup'">Sign Up</button>
+                <button class="btn_top" onclick="window.location.href='/auth/signin'">Sign In</button>
+            {% endif %}
+        </div>
+    </div>
+        <div class="container">
+            <h2>Responses for "{{ form.name }}"</h2>
+            {% if response_data %}
+                <table>
+                    <tr>
+                        {% for name in field_names %}
+                            <th>{{ field_labels[name] }}</th>
+                        {% endfor %}
+                    </tr>
+                    {% for row in response_data %}
+                        <tr>
+                            {% for value in row %}
+                                <td>{{ value }}</td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </table>
+                <a href="#" class="export-btn" onclick="exportToCSV()">Export to CSV</a>
+            {% else %}
+                <p class="no-data">No responses yet.</p>
+            {% endif %}
+            <a href="/admin/forms" class="back-link">Back to Forms</a>
+        </div>
+
+        <script>
+            function exportToCSV() {
+                // Prepare CSV content
+                const headers = [{% for name in field_names %}"{{ field_labels[name] }}"{% if not loop.last %}, {% endif %}{% endfor %}];
+                const rows = [
+                    {% for row in response_data %}
+                    [{% for value in row %}"{{ value|replace('"', '""') }}"{% if not loop.last %}, {% endif %}{% endfor %}]{% if not loop.last %},{% endif %}
+                    {% endfor %}
+                ];
+
+                // Create CSV content
+                let csvContent = headers.join(',') + '\\n';
+                rows.forEach(row => {
+                    csvContent += row.join(',') + '\\n';
+                });
+
+                // Download the CSV file
+                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                const link = document.createElement('a');
+                const url = URL.createObjectURL(blob);
+                link.setAttribute('href', url);
+                link.setAttribute('download', '{{ form.name }}_responses.csv');
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+        </script>
+    </body>
+    </html>
