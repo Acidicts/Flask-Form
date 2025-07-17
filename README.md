@@ -69,7 +69,3 @@ This is a development version and includes several security considerations:
 - Default admin credentials should be changed
 - Passwords are stored in plaintext (use a proper hashing solution in production)
 - Secret key is hardcoded (should be environment variable in production)
-
-## License
-
-[MIT License](LICENSE)
