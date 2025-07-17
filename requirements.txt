@@ -1,6 +1,4 @@
 # Create requirements.txt
-cat > requirements.txt << 'EOF'
 flask
 flask-sqlalchemy
 flask-login
-EOF
