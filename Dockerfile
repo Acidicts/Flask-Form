@@ -1,5 +1,4 @@
 # Create Dockerfile
-cat > Dockerfile << 'EOF'
 FROM python:3.11-slim
 
 WORKDIR /app
@@ -12,4 +11,3 @@ COPY . .
 EXPOSE 5000
 
 CMD ["python", "main.py"]
-EOF
