@@ -1,133 +1,168 @@
 <!DOCTYPE html>
-    <html>
-    <head>
-        <title>Responses for {{ form.name }}</title>
-        <style>
-            body { font-family: Arial, sans-serif; background: #f8f8f8; padding-top: 70px; }
-            .container { max-width: 900px; margin: 40px auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 8px #ccc; }
-            h2 { text-align: center; }
-            table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-            th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
-            th { background: #f0f4f8; }
-            tr:nth-child(even) { background: #f8f8f8; }
-            a { color: #007bff; text-decoration: none; }
-            a:hover { text-decoration: underline; }
-            .export-btn { display: inline-block; margin-top: 20px; padding: 8px 16px; background: #28a745; color: white; border-radius: 4px; text-decoration: none; }
-            .export-btn:hover { background: #218838; text-decoration: none; }
-            .no-data { text-align: center; margin: 30px 0; color: #6c757d; }
-            .back-link { display: block; margin-top: 20px; }
-            .btn {
-                background: #ffc107;
-                color: #333;
-                border: none;
-                border-radius: 4px;
-                padding: 6px 12px;
-                cursor: pointer;
-                margin-left: 8px;
-            }
+<html>
+<head>
+    <title>Responses for {{ form.name }}</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f8f8f8; padding-top: 70px; }
+        .container { max-width: 900px; margin: 40px auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 8px #ccc; }
+        h2 { text-align: center; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+        th { background: #f0f4f8; }
+        tr:nth-child(even) { background: #f8f8f8; }
+        a { color: #007bff; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        .export-btn { display: inline-block; margin-top: 20px; padding: 8px 16px; background: #28a745; color: white; border-radius: 4px; text-decoration: none; }
+        .export-btn:hover { background: #218838; text-decoration: none; }
+        .no-data { text-align: center; margin: 30px 0; color: #6c757d; }
+        .back-link { display: block; margin-top: 20px; }
+        .btn {
+            background: #ffc107;
+            color: #333;
+            border: none;
+            border-radius: 4px;
+            padding: 6px 12px;
+            cursor: pointer;
+            margin-left: 8px;
+        }
 
-            .topbar {
-                top: 0;
-                left: 0;
-                background-color: #003566;
-                color: white;
-                padding: 10px 20px;
-                position: fixed;
-                width: 100%;
-                z-index: 1000;
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                box-sizing: border-box;
-            }
-            .topbar h3 {
-                margin: 0;
-                flex-shrink: 0;
-            }
-            .auth-buttons {
-                display: flex;
-                align-items: center;
-                gap: 8px;
-                flex-wrap: nowrap;
-            }
-            .btn_top {
-                background-color: #007bff;
-                color: white;
-                border: none;
-                padding: 8px 16px;
-                border-radius: 5px;
-                cursor: pointer;
-                text-decoration: none;
-                white-space: nowrap;
-            }
-            .btn:hover {
-                background: #e0a800;
-            }
-            .btn_top:hover {
-                background: #0056b3;
-            }
-        </style>
-    </head>
-    <body>
-    <div class="topbar">
-        <h3>Admin Panel</h3>
-        <div class="auth-buttons">
-            <a href="/" class="btn">Home</a>
-            <a href="/admin/forms" class="btn">Forms</a>
-            <a href="/auth/logout" class="btn_top">Logout</a>
-        </div>
+        .topbar {
+            top: 0;
+            left: 0;
+            background-color: #003566;
+            color: white;
+            padding: 10px 20px;
+            position: fixed;
+            width: 100%;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-sizing: border-box;
+        }
+        .topbar h3 {
+            margin: 0;
+            flex-shrink: 0;
+        }
+        .auth-buttons {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: nowrap;
+        }
+        .btn_top {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+        .btn:hover {
+            background: #e0a800;
+        }
+        .btn_top:hover {
+            background: #0056b3;
+        }
+        .delete-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 6px 12px;
+            cursor: pointer;
+            font-size: 0.9em;
+        }
+        .delete-btn:hover {
+            background: #c82333;
+        }
+        .edit-btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 6px 12px;
+            cursor: pointer;
+            font-size: 0.9em;
+            text-decoration: none;
+            display: inline-block;
+            margin-right: 8px;
+        }
+        .edit-btn:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+<div class="topbar">
+    <h3>Admin Panel</h3>
+    <div class="auth-buttons">
+        <a href="/" class="btn">Home</a>
+        <a href="/admin/forms" class="btn">Forms</a>
+        <a href="/admin/users" class="btn">Users</a>
+        <a href="/auth/logout" class="btn_top">Logout</a>
     </div>
-        <div class="container">
-            <h2>Responses for "{{ form.name }}"</h2>
-            {% if response_data %}
-                <table>
+</div>
+    <div class="container">
+        <h2>Responses for "{{ form.name }}"</h2>
+        {% if response_data %}
+            <table>
+                <tr>
+                    {% for name in field_names %}
+                        <th>{{ field_labels[name] }}</th>
+                    {% endfor %}
+                    <th>Actions</th>
+                </tr>
+                {% for row in response_data %}
                     <tr>
-                        {% for name in field_names %}
-                            <th>{{ field_labels[name] }}</th>
+                        {% for value in row %}
+                            <td>{{ value }}</td>
                         {% endfor %}
+                        <td>
+                            <a href="/admin/responses/{{ form.id }}/edit/{{ responses[loop.index0].id }}" class="edit-btn">Edit</a>
+                            <form action="/admin/responses/{{ form.id }}/delete/{{ responses[loop.index0].id }}" method="post" style="display: inline;">
+                                <button type="submit" class="delete-btn" onclick="return confirm('Are you sure you want to delete this response?')">Delete</button>
+                            </form>
+                        </td>
                     </tr>
-                    {% for row in response_data %}
-                        <tr>
-                            {% for value in row %}
-                                <td>{{ value }}</td>
-                            {% endfor %}
-                        </tr>
-                    {% endfor %}
-                </table>
-                <a href="#" class="export-btn" onclick="exportToCSV()">Export to CSV</a>
-            {% else %}
-                <p class="no-data">No responses yet.</p>
-            {% endif %}
-            <a href="/admin/forms" class="back-link">Back to Forms</a>
-        </div>
+                {% endfor %}
+            </table>
+            <a href="#" class="export-btn" onclick="exportToCSV()">Export to CSV</a>
+        {% else %}
+            <p class="no-data">No responses yet.</p>
+        {% endif %}
+        <a href="/admin/forms" class="back-link">Back to Forms</a>
+    </div>
 
-        <script>
-            function exportToCSV() {
-                // Prepare CSV content
-                const headers = [{% for name in field_names %}"{{ field_labels[name] }}"{% if not loop.last %}, {% endif %}{% endfor %}];
-                const rows = [
-                    {% for row in response_data %}
-                    [{% for value in row %}"{{ value|replace('"', '""') }}"{% if not loop.last %}, {% endif %}{% endfor %}]{% if not loop.last %},{% endif %}
-                    {% endfor %}
-                ];
+    <script>
+        function exportToCSV() {
+            // Prepare CSV content
+            const headers = [{% for name in field_names %}"{{ field_labels[name] }}"{% if not loop.last %}, {% endif %}{% endfor %}];
+            const rows = [
+                {% for row in response_data %}
+                [{% for value in row %}"{{ value|replace('"', '""') }}"{% if not loop.last %}, {% endif %}{% endfor %}]{% if not loop.last %},{% endif %}
+                {% endfor %}
+            ];
 
-                // Create CSV content
-                let csvContent = headers.join(',') + '\\n';
-                rows.forEach(row => {
-                    csvContent += row.join(',') + '\\n';
-                });
+            // Create CSV content
+            let csvContent = headers.join(',') + '\\n';
+            rows.forEach(row => {
+                csvContent += row.join(',') + '\\n';
+            });
 
-                // Download the CSV file
-                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-                const link = document.createElement('a');
-                const url = URL.createObjectURL(blob);
-                link.setAttribute('href', url);
-                link.setAttribute('download', '{{ form.name }}_responses.csv');
-                link.style.visibility = 'hidden';
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-            }
-        </script>
-    </body>
-    </html>
+            // Download the CSV file
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', '{{ form.name }}_responses.csv');
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    </script>
+</body>
+</html>

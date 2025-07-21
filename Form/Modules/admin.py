@@ -1,5 +1,6 @@
 import os
 from ctypes import create_string_buffer
+import json
 
 from flask import Blueprint, request, redirect, url_for, render_template, render_template_string, flash
 from Form.Modules.db import db, DynamicForm, DynamicFormEntry
@@ -226,4 +227,53 @@ def view_responses(form_id):
 
     with open(template_path + "/responses.html", 'r', encoding='utf-8') as f:
         html = f.read()
-    return render_template_string(html, form=form, field_names=field_names, field_labels=field_labels, user=current_user, response_data=response_data, name=current_user.username)
+    return render_template_string(html, form=form, field_names=field_names, field_labels=field_labels, user=current_user, response_data=response_data, responses=responses, name=current_user.username)
+
+@admin.route('/responses/<int:form_id>/delete/<int:response_id>', methods=['POST'])
+@login_required
+@admin_required
+def delete_response(form_id, response_id):
+    form = DynamicForm.query.get_or_404(form_id)
+    response = DynamicFormEntry.query.filter_by(id=response_id, form_id=form.id).first_or_404()
+
+    db.session.delete(response)
+    db.session.commit()
+
+    return redirect(url_for('admin.view_responses', form_id=form_id))
+
+
+@admin.route('/responses/<int:form_id>/edit/<int:response_id>', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def edit_response(form_id, response_id):
+    form = DynamicForm.query.get_or_404(form_id)
+    response = DynamicFormEntry.query.filter_by(id=response_id, form_id=form.id).first_or_404()
+
+    if request.method == 'POST':
+        # Handle checkbox fields specially since they can have multiple values
+        data = {}
+        fields = json.loads(form.fields)
+
+        for field in fields:
+            field_name = field['name']
+            if field['type'] == 'checkbox':
+                # Get all values for checkbox fields
+                values = request.form.getlist(field_name)
+                data[field_name] = values
+            else:
+                # Get single value for other field types
+                data[field_name] = request.form.get(field_name, '')
+
+        # Convert to JSON
+        response.data = json.dumps(data)
+        db.session.commit()
+        return redirect(url_for('admin.view_responses', form_id=form_id))
+
+    # GET request - show edit response form
+    # Parse JSON data for template
+    form_fields = json.loads(form.fields)
+    response_data = json.loads(response.data)
+
+    with open(template_path + "/edit_response.html", 'r', encoding='utf-8') as f:
+        template_content = f.read()
+    return render_template_string(template_content, form=form, response=response, form_fields=form_fields, response_data=response_data, user=current_user, name=current_user.username)
