@@ -63,13 +63,13 @@ def edit_user(user_id):
 
     if request.method == 'POST':
         username = request.form.get('username')
-        email = request.form.get('email')
+        password = request.form.get('password')
         is_admin = 'is_admin' in request.form
 
         if username:
             user.username = username
-        if email:
-            user.email = email
+        if password:
+            user.password = password
         user.is_admin = is_admin
 
         db.session.commit()
