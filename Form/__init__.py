@@ -45,7 +45,9 @@ class App:
         from Form.Modules.admin import admin
         from Form.Modules.forms import forms_bp
         from Form.Modules.user import user
+        from Form.Modules.users import users
         self.app.register_blueprint(user)
+        self.app.register_blueprint(users)
         self.app.register_blueprint(views)
         self.app.register_blueprint(auth)
         self.app.register_blueprint(admin)

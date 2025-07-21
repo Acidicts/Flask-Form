@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, abort, fla
 import os
 from flask import render_template_string
 from flask_login import current_user
+from Form.Modules.utils import render_temp
 
 views = Blueprint('views', __name__, url_prefix=None)
 
@@ -26,3 +27,7 @@ def about():
         template_content = f.read()
 
     return render_template_string(template_content)
+
+@views.route("/topbar")
+def topbar():
+    return render_temp("/admin_topbar")

@@ -28,7 +28,7 @@ def list_forms():
     with open(template_path + "/list_forms.html", 'r', encoding='utf-8') as f:
         template_content = f.read()
 
-    return render_template_string(template_content, forms=forms, user=current_user)
+    return render_template_string(template_content, forms=forms, name=current_user.username, user=current_user)
 
 @forms_bp.route('/fill/<int:form_id>', methods=['GET', 'POST'])
 def fill_form(form_id):
