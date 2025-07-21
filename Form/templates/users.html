@@ -113,6 +113,16 @@
             margin-left: 8px;
             text-decoration: none;
         }
+        .btn:hover {
+            background: #e0a800;
+        }
+        .btn-delete {
+            background: #dc3545;
+            color: white;
+        }
+        .btn-delete:hover {
+            background: #c82333;
+        }
         .back-link {
             display: inline-block;
             margin-top: 20px;
@@ -135,6 +145,7 @@
         <div class="auth-buttons" style="display: inline; margin-left: 20px;">
             <a href="/" class="btn">Home</a>
             <a href="/admin/forms" class="btn">Forms</a>
+            <a href="/admin/users" class="btn">Users</a>
             <a href="/auth/logout" class="btn_top">Logout</a>
         </div>
     </div>
@@ -150,6 +161,7 @@
                         <th>Username</th>
                         <th>Role</th>
                         <th>Password Hash</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -165,6 +177,12 @@
                                 {% endif %}
                             </td>
                             <td><span class="password-hidden">••••••••••••••••</span></td>
+                            <td>
+                                <a href="/admin/users/edit/{{user.id}}" class="btn">Edit</a>
+                                <form action="/admin/users/delete/{{user.id}}" method="post" style="display: inline; margin-left: 8px;">
+                                    <button type="submit" class="btn btn-delete" onclick="return confirm('Are you sure you want to delete user {{user.username}}? This action cannot be undone.')">Delete</button>
+                                </form>
+                            </td>
                         </tr>
                     {% endfor %}
                 </tbody>
@@ -175,7 +193,7 @@
             </div>
         {% endif %}
 
-        <a href="/admin" class="back-link">← Back to Admin Panel</a>
+        <a href="/admin/forms" class="back-link">← Back to Admin Panel</a>
     </div>
 </body>
 </html>

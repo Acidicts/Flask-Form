@@ -27,4 +27,53 @@ def index():
     users = User.query.all()
     return render_temp('users', users=users, title="Users List")
 
+@users.route('/delete/<int:user_id>', methods=['POST'])
+@login_required
+@admin_required
+def delete_user(user_id):
+    user = User.query.get_or_404(user_id)
 
+    # Prevent deleting the last admin user
+    if user.is_admin:
+        admin_count = User.query.filter_by(is_admin=True).count()
+        if admin_count <= 1:
+            flash("Cannot delete the last administrator user.", "error")
+            return redirect(url_for('users.index'))
+
+    # Prevent users from deleting themselves
+    if current_user.id == user.id:
+        flash("You cannot delete your own account.", "error")
+        return redirect(url_for('users.index'))
+
+    username = user.username  # Store username before deletion
+    db.session.delete(user)
+    db.session.commit()
+
+    flash(f"User '{username}' has been deleted successfully.", "success")
+    return redirect(url_for('users.index'))
+
+@users.route('/edit/<int:user_id>', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def edit_user(user_id):
+    """
+    Edit a user's details.
+    """
+    user = User.query.get_or_404(user_id)
+
+    if request.method == 'POST':
+        username = request.form.get('username')
+        email = request.form.get('email')
+        is_admin = 'is_admin' in request.form
+
+        if username:
+            user.username = username
+        if email:
+            user.email = email
+        user.is_admin = is_admin
+
+        db.session.commit()
+        flash(f"User {user.username} has been updated.", "success")
+        return redirect(url_for('users.index'))
+
+    return render_temp('edit_user', user=user, title="Edit User")

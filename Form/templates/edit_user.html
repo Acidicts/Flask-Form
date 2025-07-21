@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{title}} - {{user.username}}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f8f8f8;
+            margin: 0;
+            padding-top: 70px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px #ccc;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+        .user-info {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 25px;
+            border-left: 4px solid #007bff;
+        }
+        .user-info h3 {
+            margin: 0 0 10px 0;
+            color: #495057;
+        }
+        .user-info p {
+            margin: 5px 0;
+            color: #6c757d;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+        }
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        .password-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        .password-container input {
+            padding-right: 120px; /* Make room for the button */
+        }
+        .show-password-btn {
+            position: absolute;
+            right: 10px;
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: background-color 0.3s;
+        }
+        .show-password-btn:hover {
+            background: #545b62;
+        }
+        .password-hash {
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            color: #6c757d;
+            word-break: break-all;
+        }
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+            margin: 0;
+            transform: scale(1.2);
+        }
+        .checkbox-group label {
+            margin: 0;
+            font-weight: normal;
+            color: #333;
+        }
+        .admin-warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 12px;
+            border-radius: 4px;
+            margin-top: 10px;
+            font-size: 0.9em;
+        }
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        .btn-primary {
+            background: #007bff;
+            color: white;
+        }
+        .btn-primary:hover {
+            background: #0056b3;
+        }
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        .btn-secondary:hover {
+            background: #545b62;
+        }
+        .current-role {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.85em;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        .current-role.admin {
+            background: #28a745;
+            color: white;
+        }
+        .current-role.user {
+            background: #6c757d;
+            color: white;
+        }
+        .topbar {
+            top: 0;
+            left: 0;
+            background-color: #003566;
+            color: white;
+            padding: 10px 20px;
+            position: fixed;
+            width: 100%;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-sizing: border-box;
+        }
+        .topbar h3 {
+            margin: 0;
+            flex-shrink: 0;
+        }
+        .auth-buttons {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: nowrap;
+        }
+        .btn_top {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+        .btn_nav {
+            background: #ffc107;
+            color: #333;
+            border: none;
+            border-radius: 4px;
+            padding: 6px 12px;
+            cursor: pointer;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+        .btn_nav:hover {
+            background: #e0a800;
+        }
+        .btn_top:hover {
+            background: #0056b3;
+        }
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            border: 1px solid #f5c6cb;
+        }
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            border: 1px solid #c3e6cb;
+        }
+    </style>
+</head>
+<body>
+    <div class="topbar">
+        <h3>Admin Panel</h3>
+        <div class="auth-buttons">
+            <a href="/" class="btn_nav">Home</a>
+            <a href="/admin/forms" class="btn_nav">Forms</a>
+            <a href="/admin/users" class="btn_nav">Users</a>
+            <a href="/auth/logout" class="btn_top">Logout</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <h1>{{title}}</h1>
+
+        <div class="user-info">
+            <h3>User Information</h3>
+            <p><strong>User ID:</strong> {{user.id}}</p>
+            <p><strong>Username:</strong> {{user.username}}</p>
+            <p><strong>Current Role:</strong>
+                {% if user.is_admin %}
+                    <span class="current-role admin">Administrator</span>
+                {% else %}
+                    <span class="current-role user">User</span>
+                {% endif %}
+            </p>
+        </div>
+
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="success-message">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <form method="post">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text"
+                       id="username"
+                       name="username"
+                       value="{{user.username}}"
+                       minlength="3"
+                       maxlength="80">
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <div class="password-container">
+                    <input type="password"
+                           id="password"
+                           name="password"
+                           value="{{user.password if user.password else ''}}"
+                           placeholder="Enter New Password">
+                    <button type="button" class="show-password-btn" id="togglePassword">
+                        Show
+                    </button>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>User Permissions</label>
+                <div class="checkbox-group">
+                    <input type="checkbox"
+                           id="is_admin"
+                           name="is_admin"
+                           {% if user.is_admin %}checked{% endif %}>
+                    <label for="is_admin">Administrator privileges</label>
+                </div>
+                <div class="admin-warning">
+                    <strong>⚠️ Warning:</strong> Administrator users have full access to all forms, responses, and user management features. Only grant admin privileges to trusted users.
+                </div>
+            </div>
+
+            <div class="btn-group">
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+                <a href="/admin/users" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // Add confirmation for admin privilege changes
+        document.getElementById('is_admin').addEventListener('change', function() {
+            if (this.checked) {
+                const confirmed = confirm('Are you sure you want to grant administrator privileges to this user? This will give them full access to the admin panel.');
+                if (!confirmed) {
+                    this.checked = false;
+                }
+            }
+        });
+
+        // Form validation
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const username = document.getElementById('username').value.trim();
+
+            if (username.length < 3) {
+                e.preventDefault();
+                alert('Username must be at least 3 characters long.');
+                return;
+            }
+
+            if (username.length > 80) {
+                e.preventDefault();
+                alert('Username must be less than 80 characters long.');
+                return;
+            }
+        });
+
+        // Toggle password visibility
+        document.getElementById('togglePassword').addEventListener('click', function() {
+            const passwordInput = document.getElementById('password');
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            this.textContent = type === 'password' ? 'Show' : 'Hide';
+        });
+    </script>
+</body>
+</html>
+
