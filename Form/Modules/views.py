@@ -27,7 +27,3 @@ def about():
         template_content = f.read()
 
     return render_template_string(template_content)
-
-@views.route("/topbar")
-def topbar():
-    return render_temp("/admin_topbar")
