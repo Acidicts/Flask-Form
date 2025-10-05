@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+*.pyo
+*.log
+.env
+.venv
+.git
+.gitignore
+*.md
+instance/site.db
+.idea
+.vscode

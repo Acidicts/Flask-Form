@@ -23,6 +23,28 @@ A web application that allows administrators to create, manage, and collect resp
 
 ## Installation
 
+### Option 1: Docker (Recommended)
+
+1. Clone the repository
+```bash
+git clone https://github.com/Acidicts/Flask-Form.git
+cd Flask-Form
+```
+
+2. Build and run with Docker Compose
+```bash
+docker-compose up --build
+```
+
+3. Access the application at http://127.0.0.1:5000
+
+To stop the application:
+```bash
+docker-compose down
+```
+
+### Option 2: Local Installation
+
 1. Clone the repository
 ```bash
 git clone https://github.com/Acidicts/Flask-Form.git
@@ -39,7 +61,7 @@ source .venv/bin/activate  # Unix/Mac
 
 3. Install dependencies
 ```bash
-pip install flask flask-sqlalchemy flask-login
+pip install -r requirements.txt
 ```
 
 4. Run the application
@@ -69,3 +91,7 @@ This is a development version and includes several security considerations:
 - Default admin credentials should be changed
 - Passwords are stored in plaintext (use a proper hashing solution in production)
 - Secret key is hardcoded (should be environment variable in production)
+
+## License
+
+[MIT License](LICENSE)

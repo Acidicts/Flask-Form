@@ -55,8 +55,6 @@ class App:
 
     def create_tables(self):
         with self.app.app_context():
-            # Try to query from tables to check if schema is valid
-            # If there's a new column, it will raise an OperationalError
             schema_changed = False
 
             try:
@@ -67,18 +65,14 @@ class App:
                 DynamicFormEntry.query.first()
                 FormEntry.query.first()
             except sqlalchemy.exc.OperationalError:
-                # If there's an error (like "no such column"), schema has changed
                 print("Schema change detected. Rebuilding database...")
                 schema_changed = True
 
-            # Drop and recreate all tables if schema changed
             if schema_changed:
                 db.drop_all()
 
-            # Create tables that don't exist
             db.create_all()
 
-            # Create an admin user if no users exist
             from Form.Modules.db import User
             try:
                 if not User.query.first():
